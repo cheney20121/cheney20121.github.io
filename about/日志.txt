@@ -1,0 +1,453 @@
+[SQL]/**
+1、查询要处理的用户和小孩id录入temp_ybb_user(old_user_id,ybb_child_id,child_id)
+2、复制user录入appId为3的用户，需处理sb_user表ybb_user_id=ybb_child_id
+3. 由于ybb中的teacher 有的没有保存ybb_user_id 所以复制一份 在老师表里面有的用户 
+4、录入ybb_user_extend数据，需处理role_id，
+5、回写new_user_id到temp_ybb_user
+6、更新sb_user_child表user_id为new_user_id
+7、更新sb_pay_alipay_sign、sb_school_teacher表user_id为new_user_id(由于old_user_id对应多个new_user_id取default小孩对应的new_user_id)
+8、其他涉及user_id的数据处理（student）
+
+**/
+/**
+备份表
+SELECT * FROM sb_user_child;
+SELECT * from sb_user where id=1134405;
+CREATE TABLE sb_user_child_20171130 AS SELECT * FROM sb_user_child;
+CREATE TABLE sb_school_teacher_20171130 AS SELECT * FROM sb_school_teacher;
+CREATE TABLE sb_user_order20171130 AS SELECT * from sb_user_order;
+CREATE TABLE sb_school_student_20171130 AS SELECT * from sb_school_student;
+CREATE TABLE sb_pay_alipay_sign_20171130 As SELECT * FROM sb_pay_alipay_sign;
+CREATE TABLE sb_user_20171130 AS SELECT * FROM sb_user;
+CREATE TABLE sb_ybb_user_20171130 AS SELECT * FROM sb_ybb_user;
+**/
+
+/**
+清理数据
+SELECT  * from sb_user WHERE ybb_user_id IS not null;
+DELETE FROM temp_ybb_user ;
+SELECT * from sb_user WHERE app_id=3;
+DELETE FROM sb_user WHERE app_id =3
+SELECT * FROM sb_user_ybb_extend;
+DELETE FROM sb_user_ybb_extend;
+SELECT * FROM sb_user_child;
+SELECT * from  sb_user_token;
+DELETE  from temp_ybb_user;
+**/
+
+-- 先处理重复的ybb_child_id 用户小孩数据
+/**
+SELECT * FROM sb_user_child WHERE STATUS =1 GROUP BY ybb_child_id HAVING COUNT(id)>1;
+
+SELECT * FROM sb_user_child WHERE ybb_child_id in(45058,1064816,1064949,1569483,1621510,1673485,1674120,1675247,1675821,1675827,1675842,1675867,1675870);
+
+SELECT * from  sb_school_student WHERE user_id=1131456;
+select * from sb_user_order where user_id = 1131456;
+SELECT * FROM sb_school_class where id in(9890,9887);
+/**修改class 以公众号的为准
+
+SELECT * from sb_school_class;
+**/
+
+
+
+-- 1. 需要复制的用户  
+INSERT INTO sb_user (email, password, akey, qq, phone, nickname, icons, sex, birthday, city, reg_date, first_access_time,
+    last_access_time, login_ip, reg_ip, reg_dev_no, status, client_ver, dev_type, system_type, 
+    recovery_code, recovery_life, open_id, open_stoken, expire_in, coin, uuid, is_vip, 
+    order_date, reg_channel, client_channel, user_name, uid, app_id, extras_info, school_address, vip_open_date, 
+    vip_close_date, vip_first_open_date, vip_opened_count, is_vip_first_open, bind_open_id, 
+    vip_level, wx_union_id,open_id_qq,open_id_wx,open_id_hw,nickname_wx,nickname_qq,nickname_hw,nickname_ali,
+    open_id_ali,ali_user_id,ybb_user_id)
+ SELECT email, password, akey, qq, phone, nickname, A.icons, sex, A.birthday, city, reg_date, first_access_time,
+    last_access_time, login_ip, reg_ip, reg_dev_no, A.status, client_ver, dev_type, system_type, 
+    recovery_code, recovery_life, open_id, open_stoken, expire_in, coin, uuid, is_vip, 
+    order_date, reg_channel, client_channel, user_name, uid, 3, extras_info, school_address, vip_open_date, 
+    vip_close_date, vip_first_open_date, vip_opened_count, is_vip_first_open, bind_open_id, 
+    vip_level, wx_union_id,open_id_qq,open_id_wx,open_id_hw,nickname_wx,nickname_qq,nickname_hw,nickname_ali,
+    open_id_ali,ali_user_id,B.ybb_child_id AS ybb_user_id from  sb_user  A JOIN
+sb_user_child B ON A.id =B.user_id where app_id=2 and A.`status`=1 AND B.`status`=1  and B.ybb_child_id is not null;
+受影响的行: 78177
+时间: 4.036s
+
+[SQL]
+
+/**
+查询插入的数据
+SELECT * from  sb_user  where ybb_user_id is not null;
+或者
+SELECT * from  sb_user  where app_id =3;
+
+**/
+-- 2. 复制老师
+/**云宝贝过来的老师
+SELECT * from sb_ybb_user;
+SELECT * from  sb_user  where app_id =3;
+**/
+INSERT INTO sb_user (email, password, akey, qq, phone, nickname, icons, sex, birthday, city, reg_date, first_access_time,
+    last_access_time, login_ip, reg_ip, reg_dev_no, status, client_ver, dev_type, system_type, 
+    recovery_code, recovery_life, open_id, open_stoken, expire_in, coin, uuid, is_vip, 
+    order_date, reg_channel, client_channel, user_name, uid, app_id, extras_info, school_address, vip_open_date, 
+    vip_close_date, vip_first_open_date, vip_opened_count, is_vip_first_open, bind_open_id, 
+    vip_level, wx_union_id,open_id_qq,open_id_wx,open_id_hw,nickname_wx,nickname_qq,nickname_hw,nickname_ali,
+    open_id_ali,ali_user_id,ybb_user_id)
+SELECT email, password, akey, qq, A.phone, nickname, A.icons, sex, A.birthday, city, reg_date, first_access_time,
+    last_access_time, login_ip, reg_ip, reg_dev_no, A.status, client_ver, dev_type, system_type, 
+    recovery_code, recovery_life, open_id, open_stoken, expire_in, coin, uuid, is_vip, 
+    order_date, reg_channel, client_channel, user_name, uid, 3, extras_info, school_address, vip_open_date, 
+    vip_close_date, vip_first_open_date, vip_opened_count, is_vip_first_open, bind_open_id, 
+    vip_level, wx_union_id,open_id_qq,open_id_wx,open_id_hw,nickname_wx,nickname_qq,nickname_hw,nickname_ali,
+    open_id_ali,ali_user_id,B.id AS ybb_user_id 
+ from sb_user A JOIN sb_ybb_user B  ON A.phone =B.phone where app_id=2 and A.`status`=1   and B.id not in(select ybb_user_id from sb_user where app_id=3) ;
+受影响的行: 1920
+时间: 0.849s
+
+[SQL]
+
+
+
+-- 3. 插入云宝贝拓展表
+/**
+SELECT * from temp_ybb_user;
+SELECT * FROM sb_user_ybb_extend;
+DELETE from sb_user_ybb_extend;
+**/
+INSERT INTO sb_user_ybb_extend(user_id,ybb_user_id,create_time)
+SELECT id, ybb_user_id,sysdate() AS create_time FROM sb_user  WHERE app_id =3 and ybb_user_id is NOT NULL;
+受影响的行: 80097
+时间: 1.184s
+
+[SQL]
+
+
+/**
+查询之前表的数据
+SELECT * FROM temp_ybb_user;
+**/
+-- 4. 录入新增家长 新增临时表 插入原来的老用户Id,老用户对应的小孩id
+INSERT INTO temp_ybb_user (old_user_id,ybb_user_id,child_id)
+SELECT A.id AS old_user_id,B.ybb_child_id ,B.id AS child_id  from  sb_user  A JOIN
+sb_user_child B ON A.id =B.user_id where app_id=2 and A.`status`=1 AND B.`status`=1  and B.ybb_child_id is not null;
+受影响的行: 78177
+时间: 1.342s
+
+[SQL]
+
+
+
+/**
+SELECT * from temp_ybb_user WHERE teacher_id IS NULL AND pay_sign_id is NULL AND order_id IS null; 
+
+SELECT * from temp_ybb_user WHERE teacher_id is not null;
+
+DELETE FROM temp_ybb_user WHERE teacher_id is not null;
+**/
+-- 录入老师
+INSERT INTO temp_ybb_user (old_user_id,ybb_user_id,teacher_id,role_id)
+SELECT A.user_id AS old_user_id,B.id AS ybb_user_id ,A.id AS teacher_id ,B.role_id AS role_id
+ from sb_school_teacher A JOIN sb_ybb_user B  ON A.phone =B.phone where A.`status`=1  ;
+受影响的行: 9502
+时间: 20.114s
+
+[SQL] 
+
+
+
+/**
+SELECT * from sb_school_teacher WHERE user_id =1351362;
+验证临时表中是否把新增修改的老数据更新到这个表
+SELECT * from  temp_ybb_user ;
+**/
+
+-- 5. 根据ybb_child_id 和sb_user 表的ybb_user_id 相等 更新新的new_user_id 到临时表
+
+UPDATE temp_ybb_user T1,
+ sb_user T2
+SET T1.new_user_id = T2.id
+WHERE
+	T1.ybb_user_id = T2.ybb_user_id;
+受影响的行: 87669
+时间: 3.922s
+
+[SQL]
+
+/**
+查询temp_ybb_user表中的数据 新用户的数据 Id 是否更新
+select * from temp_ybb_user WHERE new_user_id is not null;
+SELECT * from temp_ybb_user where new_user_id is NULL;
+**/
+-- 6.签约关系
+/**查询原来的签约关系
+SELECT * from sb_pay_alipay_sign
+SELECT * from sb_user_child
+SELECT * FROM   sb_pay_alipay_sign T1,temp_ybb_user T2 WHERE T1.user_id = T2.old_user_id and T1.sign_status='NORMAL' ORDER BY T1.sign_time desc;
+SELECT * from temp_ybb_user WHERE pay_sign_id IS NOT NULL;
+**/ 
+-- 插入需要处理的签约数据 到临时表
+INSERT INTO temp_ybb_user (old_user_id,pay_sign_id)
+SELECT DISTINCT T1.user_id AS old_user_id,T1.id AS pay_sign_id from sb_pay_alipay_sign T1,temp_ybb_user T2 WHERE T1.user_id = T2.old_user_id and T1.sign_status='NORMAL';
+受影响的行: 241
+时间: 9.292s
+
+[SQL]
+
+-- 查询用户有多个默认小孩
+/**
+SELECT t1.user_id ,COUNT(*)from sb_user_child t1,temp_ybb_user t2 
+WHERE t1.ybb_child_id =t2.ybb_user_id
+AND t1.default_flag=1
+AND t2.pay_sign_id is NOT NULL
+AND t1.`status`=1
+GROUP BY t1.user_id HAVING COUNT(*)>1;
+SELECT * FROM temp_ybb_user A WHERE a.pay_sign_id IS NOT NULL ;
+
+**/
+
+
+-- 更新临时表的签约数据（old_user_id，sgin_id）找到old_user_id对应有阅读记录的小孩的new_user_id 
+UPDATE temp_ybb_user T1 , temp_ybb_user T2,(
+	select t.old_user_id,min(uc.id) child_id from temp_ybb_user t join sb_user_child uc on t.ybb_user_id=uc.ybb_child_id and uc.sum_read_books is not null
+		GROUP BY t.old_user_id 
+) T3 SET T1.new_user_id=T2.new_user_id, T1.ybb_user_id=T2.ybb_user_id WHERE T1.old_user_id=T2.old_user_id and T2.old_user_id=T3.old_user_id and T2.child_id=T3.child_id and T1.pay_sign_id is not null;
+受影响的行: 200
+时间: 14.594s
+
+[SQL]
+
+-- 更新其他未处理的签约数据
+UPDATE temp_ybb_user T1 , (select old_user_id, min(new_user_id) new_user_id from temp_ybb_user group by old_user_id) T2
+	SET T1.new_user_id=T2.new_user_id
+where T1.old_user_id=T2.old_user_id and T1.pay_sign_id is not null and T1.new_user_id is null;
+受影响的行: 41
+时间: 1.399s
+
+[SQL]
+
+-- 更新签约表
+UPDATE sb_pay_alipay_sign T1, temp_ybb_user T2
+SET T1.user_id = T2.new_user_id
+WHERE T1.id = T2.pay_sign_id
+AND T2.pay_sign_id IS NOT NULL;
+受影响的行: 241
+时间: 0.112s
+
+[SQL]
+
+
+
+-- 7. 修改小孩child 的user_id 为new_user_id，使用ybb_child_id关联
+/**
+查询
+SELECT * from  sb_user_child WHERE status =1 and ybb_child_id is not null;  
+SELECT * from sb_user where id=1411804;
+**
+*/
+UPDATE sb_user_child T3,
+ temp_ybb_user T4
+SET T3.user_id = T4.new_user_id
+WHERE T3.id = T4.child_id
+AND T3.ybb_child_id = T4.ybb_user_id;
+受影响的行: 78177
+时间: 2.212s
+
+[SQL]
+
+/**
+验证查询数据
+SELECT * from  sb_user_child where ybb_child_id is NOT NULL;
+SELECT * from  sb_user_child WHERE user_id=1114150;
+SELECT * from  sb_user_child WHERE ybb_child_id=83492;
+
+SELECT * from sb_school_teacher WHERE ybb_user_id is null;
+SELECT * from sb_school_teacher WHERE ybb_user_id is not null;
+
+SELECT * from temp_ybb_user where teacher_id  IS NOT NULL;
+
+SELECT * from sb_ybb_user where phone=18390893368;
+SELECT * from sb_user_child where user_id=1478270;
+SELECT * from temp_ybb_user WHERE ybb_user_id =83492;
+SELECT * from  sb_user where id in(1114150,1478270);
+
+**/
+
+-- 8. 教师修改sb_schoool_teacher  增加ybb_user_id (一定要先更新临时表 老师对应的new_user_id)
+UPDATE sb_school_teacher T3,
+ temp_ybb_user T4
+SET T3.user_id = T4.new_user_id,T3.ybb_user_id= T4.ybb_user_id
+WHERE T3.id = T4.teacher_id;
+受影响的行: 8819
+时间: 0.441s
+
+[SQL]
+
+-- 10. 如果user app_id = 3 的没有对应的child 创建小孩
+/**
+查询没有小孩的用户  这个一定要执行在 小孩userChild 更新完user_id之后
+SELECT * FROM (SELECT	T1.*, T2.user_id	FROM sb_user T1	LEFT JOIN sb_user_child T2 ON T1.id = T2.user_id WHERE	T1. STATUS = 1	AND T1.app_id = 3	) T3 WHERE
+	T3.user_id IS NULL;
+**/
+INSERT INTO sb_user_child (
+	user_id,
+	NAME,
+  icons,
+	birthday,
+	gender,
+	STATUS,
+	default_flag,
+	ybb_child_id
+) SELECT
+	T3.id AS user_id,
+	'宝贝' AS NAME,
+  'https://img.v2.babystory365.com/images/ybbh5/default/10.png' AS icons,
+	'2015-01-01' AS birthday,
+	2 AS gender,
+	1 AS STATUS,
+	1 AS default_flag,
+	T3.ybb_user_id AS ybb_child_id
+FROM
+	(
+		SELECT
+			T1.*, T2.user_id
+		FROM
+			sb_user T1
+		LEFT JOIN sb_user_child T2 ON T1.id = T2.user_id
+		WHERE
+			T1. STATUS = 1
+		AND T1.app_id = 3
+	) T3
+WHERE
+	T3.user_id IS NULL;
+受影响的行: 1920
+时间: 2.421s
+
+[SQL]
+
+
+
+-- 11. 修改sb_user_ybb_extend 中role_id 逻辑
+/**已结插入了user_id ybb_user_id 
+根据ybb_user_id去teacher表查 对应的角色 没有则是家长
+SELECT * from sb_user_ybb_extend
+SELECT * from  sb_ybb_user
+**/
+
+UPDATE sb_user_ybb_extend T1,
+ sb_ybb_user T2
+SET T1.role_id = (
+	CASE
+	WHEN T2.role_id = 2 THEN
+		1
+	WHEN T2.role_id = 5 THEN
+		2
+	ELSE
+		0
+	END
+)
+WHERE
+	T1.ybb_user_id = T2.id;
+受影响的行: 8816
+时间: 0.271s
+
+[SQL]
+
+-- 12. 修改sb_school_student 学生表 在更新完sb_user_child表之后
+/**
+SELECT *from sb_school_student WHERE user_id=1172096;
+SELECT * FROM sb_school_student WHERE child_id =119620
+SELECT * from sb_user WHERE id=766589;
+SELECT * from sb_user_child where id in (701,702);
+
+**/
+UPDATE sb_school_student T1 ,sb_user_child T2
+SET  T1.user_id = T2.user_id
+WHERE T1.child_id = T2.id
+AND T2.status= 1;
+受影响的行: 86759
+时间: 1.181s
+
+[SQL]
+
+-- 13. 修改订单表
+/**
+SELECT * from sb_user_order;
+SELECT * from sb_user where id=1227850;
+SELECT * FROM sb_user_child WHERE user_id=1227850;
+SELECT * from temp_ybb_user where old_user_id =1145610;
+**/
+-- 插入之前ybb 老用户的订单 放入临时表
+INSERT INTO temp_ybb_user (old_user_id,order_id)
+SELECT T1.user_id, T1.id AS order_id FROM sb_user_order T1 
+WHERE T1.user_id in (SELECT T2.old_user_id  from temp_ybb_user T2 );
+受影响的行: 4339
+时间: 0.732s
+
+[SQL]
+
+
+
+-- 更新临时表的订单数据（old_user_id，order_id）找到old_user_id对应有阅读记录的小孩的new_user_id 
+UPDATE temp_ybb_user T1 , temp_ybb_user T2,(
+	select t.old_user_id,min(uc.id) child_id from temp_ybb_user t join sb_user_child uc on t.ybb_user_id=uc.ybb_child_id and uc.sum_read_books is not null
+		GROUP BY t.old_user_id 
+) T3 SET T1.new_user_id=T2.new_user_id, T1.ybb_user_id=T2.ybb_user_id WHERE T1.old_user_id=T2.old_user_id and T2.old_user_id=T3.old_user_id and T2.child_id=T3.child_id 
+and T1.order_id is not null;
+受影响的行: 3751
+时间: 259.548s
+
+[SQL]
+ 
+-- 更新其他未处理的订单数据
+UPDATE temp_ybb_user T1 , (select old_user_id, min(new_user_id) new_user_id from temp_ybb_user group by old_user_id) T2
+	SET T1.new_user_id=T2.new_user_id
+where T1.old_user_id=T2.old_user_id and T1.order_id is not null and T1.new_user_id is null;
+受影响的行: 587
+时间: 1.477s
+
+[SQL]
+
+/**
+SELECT * from temp_ybb_user where order_id IS NOT null;
+**/
+-- 更新订单表  更新完成插入订单的用户（更新订单用户对应的new_user_id）
+UPDATE sb_user_order T1, temp_ybb_user T2
+SET T1.user_id = T2.new_user_id
+WHERE T1.id = T2.order_id
+AND T2.order_id IS NOT NULL;
+受影响的行: 4339
+时间: 0.234s
+
+[SQL]
+
+/**
+SELECT * FROM temp_ybb_user where order_id is NOT NULL AND new_user_id is NULL;
+SELECT * from temp_ybb_user where order_id=1478707;
+SELECT * from sb_user_order where user_id is null;
+SELECT * from sb_user_order WHERE user_id in(1478707);
+**/
+
+/**
+1. 复制有ybb_child_id 的用户 到sb_user表
+2. 复制没有ybb_child_id的用户 但是在云宝贝有的老师 （之前老师过来的用户没有保存ybb_child_id） 插入sb_user表
+3. 插入云宝贝拓展表 （把app_id为3 且ybb_user_id不为空的都插入拓展表）
+4. 录入临时表 temp_ybb_user 表 （家长，老师 ，签约 对应的临时表）
+5. 根据录入的签约id 和old_user_id找出对应的默认新的new_user_id 更新到temp_ybb_user
+6. 根据签约表Id 和临时表的sign_id关系 更新user_id
+7. 根据teacher表的id 和临时表的teacher_id 更新user_id  加个ybb_user_id
+8. 所有USER_ID更新为new_user_id 之后  再更新小孩表的 USER_ID为new_user_id 
+9. 更新拓展表的角色id  如果对应ybb_user_id在ybb同步过来的表中有角色则是老师或者园长 否则为家长
+10. 更新学生表
+11. 更新订单表
+
+
+
+
+DELETE FROM sb_user_child;
+INSERT INTO sb_user_child 
+SELECT * from sb_user_child_20171130;
+
+SELECT * FROM sb_user_child;
+**/
+
+受影响的行: 0
+时间: 0.038s
+
