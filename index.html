@@ -5,14 +5,14 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <link rel="dns-prefetch" href="https://www.360suan.com">
+  <link rel="dns-prefetch" href="https://360suan.xyz">
   <title>Cheney</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="缘分注定">
 <meta name="keywords" content="前端,js,jquery,javascript,html5,开发者,程序猿,程序媛,极客,编程,代码,开源,IT网站,Developer,Programmer,Coder,Geek,html,css,css3,用户体验">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Cheney">
-<meta property="og:url" content="https://www.360suan.com/index.html">
+<meta property="og:url" content="https://360suan.xyz/index.html">
 <meta property="og:site_name" content="Cheney">
 <meta property="og:description" content="缘分注定">
 <meta property="og:locale" content="zh-Hans">
@@ -163,6 +163,218 @@ var _hmt = _hmt || [];
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-react学习《二》" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="React-入门"><a href="#React-入门" class="headerlink" title="React 入门"></a>React 入门</h1><h2 id="React-概览"><a href="#React-概览" class="headerlink" title="React 概览"></a>React 概览</h2><pre><code>react的核心思想是：封装组件
+各个组件维护自己的状态和UI，当状态变更，自动重新渲染整个组件。
+基于这种方式的一个直观感受就是我们不在需要不厌其烦的来回找某个DOM元素，然后操作DOM去更改UI。
+
+React大体包括
+</code></pre><ul>
+<li>组件</li>
+<li>JSX</li>
+<li>Virtual DOM</li>
+<li>Data Flow</li>
+</ul>
+<h2 id="使用JSX"><a href="#使用JSX" class="headerlink" title="使用JSX"></a>使用JSX</h2><p>利用JSX编写的DOM结构，可以用原生的HTML标签。也可以直接像普通标签一样引用React组件。这两者约定通过大小写来区分，小写的字符串是HTML标签，大写开头的变量是<br>React组件。</p>
+<p><em>HTML 里面的class 在JSX里面要写出className，因为class在JS里面是保留关键字，同理某些属性比如for要写成htmlFor</em></p>
+<p>使用组件：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;</div><div class="line">    <span class="keyword">import</span> &#123;render&#125; <span class="keyword">from</span> <span class="string">'react-dom'</span>;</div><div class="line">    <span class="keyword">import</span> MyComponent <span class="keyword">from</span> <span class="string">'./MyComponet'</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">var</span> myElement =&lt;MyComponent someProperty=&#123;true&#125; /&gt;</div><div class="line">    render(myElement,document.body);</div><div class="line">    </div><div class="line">``` </div><div class="line">    </div><div class="line">### 使用JavaScript 表达式</div><div class="line"></div><div class="line">属性值使用表达式，只要用 &#123;&#125; 替换 "":</div><div class="line"></div><div class="line">## 组件生命周期</div><div class="line">一般来说，一个组件类有 extends Component 创建，并且提供一个 render方法以及其他可选的生命周期函数，组件相关的事件或者方法来定义。</div><div class="line"></div><div class="line"></div><div class="line">#### getInitialState</div><div class="line">初始化 this.state 的值，只在组件装载之前调用一次。</div><div class="line">如果是使用 ES6 的语法，你也可以在构造函数中初始化状态，比如：</div></pre></td></tr></table></figure>
+<p>class Counter extends Component {<br>  constructor(props) {<br>    super(props);<br>    this.state = { count: props.initialCount };<br>  }</p>
+<p>  render() {<br>    // …<br>  }<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">#### getDefaultProps</div><div class="line">只在组件创建时调用一次并缓存返回的对象（即在 React.createClass 之后就会调用）。</div><div class="line">因为这个方法在实例初始化之前调用，所以在这个方法里面不能依赖 this 获取到这个组件的实例。</div><div class="line">在组件装载之后，这个方法缓存的结果会用来保证访问 this.props 的属性时，当这个属性没有在父组件中传入（在这个组件的 JSX 属性里设置），也总是有值的。</div><div class="line">如果是使用 ES6 语法，可以直接定义 defaultProps 这个类属性来替代，这样能更直观的知道 default props 是预先定义好的对象值：</div><div class="line"></div><div class="line">#### render</div><div class="line">必须</div><div class="line"></div><div class="line">组装生成这个组件的 HTML 结构（使用原生 HTML 标签或者子组件），也可以返回 null 或者 false，这时候 ReactDOM.findDOMNode(this) 会返回 null。</div><div class="line"></div><div class="line">###  生命周期函数</div><div class="line">#### 装载组件触发</div><div class="line">==componentWillMount==</div><div class="line"></div><div class="line">只会在装载之前调用一次，在 render 之前调用，你可以在这个方法里面调用 setState 改变状态，并且不会导致额外调用一次 render</div><div class="line"></div><div class="line">==componentDidMount==</div><div class="line"></div><div class="line">只会在装载完成之后调用一次，在 render 之后调用，从这里开始可以通过 ReactDOM.findDOMNode(this) 获取到组件的 DOM 节点。</div><div class="line"></div><div class="line">#### 更新组件触发</div><div class="line">这些方法不会在首次 render 组件的周期调用</div><div class="line"></div><div class="line">- componentWillReceiveProps</div><div class="line">- shouldComponentUpdate</div><div class="line">- componentWillUpdate</div><div class="line">- componentDidUpdate</div><div class="line">#### 卸载组件触发</div><div class="line">- componentWillUnmount</div><div class="line">更多关于组件相关的方法说明，参见：</div><div class="line">- Component Specs</div><div class="line">- Component Lifecycle</div><div class="line">- Component API</div><div class="line"></div><div class="line">### 事件处理</div><div class="line"></div><div class="line">### DOM操作</div><div class="line">#### findDOMNode()</div><div class="line">当组件加载到页面上之后（mounted），你都可以通过 react-dom 提供的 findDOMNode() 方法拿到组件对应的 DOM 元素。</div><div class="line"></div><div class="line">findDOMNode()不能用在无状态组件上。</div><div class="line"></div><div class="line">#### Refs</div><div class="line">另外一种方式就是通过在要引用的 DOM 元素上面设置一个 ref 属性指定一个名称，然后通过 this.refs.name 来访问对应的 DOM 元素。</div><div class="line">比如有一种情况是必须直接操作 DOM 来实现的，你希望一个 &lt;input/&gt; 元素在你清空它的值时 focus，你没法仅仅靠 state 来实现这个功能。</div></pre></td></tr></table></figure></p>
+<p>class App extends Component {<br>  constructor() {<br>    return { userInput: ‘’ };<br>  }</p>
+<p>  handleChange(e) {<br>    this.setState({ userInput: e.target.value });<br>  }</p>
+<p>  clearAndFocusInput() {<br>    this.setState({ userInput: ‘’ }, () =&gt; {<br>      this.refs.theInput.focus();<br>    });<br>  }</p>
+<p>  render() {<br>    return (<br>      <div><br>        <div onclick="{this.clearAndFocusInput.bind(this)}"><br>          Click to Focus and Reset<br>        </div><br>        <input ref="theInput" value="{this.state.userInput}" onchange="{this.handleChange.bind(this)}"><br>      </div><br>    );<br>  }<br>}<br>```</p>
+<p>如果 ref 是设置在原生 HTML 元素上，它拿到的就是 DOM 元素，如果设置在自定义组件上，它拿到的就是组件实例，这时候就需要通过 findDOMNode 来拿到组件的 DOM 元素。<br>因为无状态组件没有实例，所以 ref 不能设置在无状态组件上，一般来说这没什么问题，因为无状态组件没有实例方法，不需要 ref 去拿实例调用相关的方法，但是如果想要拿无状态组件的 DOM 元素的时候，就需要用一个状态组件封装一层，然后通过 ref 和 findDOMNode 去获取。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>你可以使用 ref 到的组件定义的任何公共方法，比如 this.refs.myTypeahead.reset()</li>
+<li>Refs 是访问到组件内部 DOM 节点唯一可靠的方法</li>
+<li>Refs 会自动销毁对子组件的引用（当子组件删除时）<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3></li>
+<li>不要在 render 或者 render 之前访问 refs</li>
+<li>不要滥用 refs，比如只是用它来按照传统的方式操作界面 UI：找到 DOM -&gt; 更新 DOM</li>
+</ul>
+<h4 id="this-props-children"><a href="#this-props-children" class="headerlink" title="this.props.children"></a>this.props.children</h4>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/25/react学习《二》/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-diary-2018-0110-0116" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/01/01/diary-2018-0110-0116/">http协议 详解</a>
+    </h1>
+  
+
+        
+        <a href="/2018/01/01/diary-2018-0110-0116/" class="archive-article-date">
+  	<time datetime="2018-01-01T02:36:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-01-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/assets/blogImg/diary-6.jpg" alt=""></p>
+<h2 id="什么是HTTP协议"><a href="#什么是HTTP协议" class="headerlink" title="什么是HTTP协议"></a>什么是HTTP协议</h2><pre><code>协议是指计算机通信网络中两台计算机之间进行通信所必须共同遵守的规定或者
+规则，超文本传输协议（HTTP）是一种通信协议，他允许将超文本标记语言（HTML）
+文档从web服务器传送到客户端浏览器
+</code></pre><p><img src="/assets/blogImg/diary-1.jpg" alt=""> </p>
+<h2 id="URL详解"><a href="#URL详解" class="headerlink" title="URL详解"></a>URL详解</h2><pre><code>https://mp.weixin.qq.com/debug/wxagame/dev/index.html?name=caoww&amp;x=true#stuff
+
+Shema:   https
+host ：   mp.weixin.qq.com：80
+path ：   /debug/wxagame/dev/index.html
+Query String : name=caoww&amp;x=true
+Anchor :  stuff
+</code></pre><h2 id="HTTP消息结构"><a href="#HTTP消息结构" class="headerlink" title="HTTP消息结构"></a>HTTP消息结构</h2><pre><code>request消息分为3部分，第一部分叫Request line 第二部分叫Request header,
+第三部分叫body。 header 和body之前有个空行
+</code></pre><h2 id="head分类"><a href="#head分类" class="headerlink" title="head分类"></a>head分类</h2><h3 id="Cache头域"><a href="#Cache头域" class="headerlink" title="Cache头域"></a>Cache头域</h3><pre><code>If-Modified-Since
+作用：把浏览器缓存页面的最后修改时间发送到服务器去，服务器会把这个时间与服务器上实际文件
+的最后修改时间进行对比。如果时间一致，那么就返回304 ，客户端直接使用本地缓存文件。如果
+时间不一致，就返回200和新的文件内容。客户端接到后。会丢弃旧文件，把新的文件缓存起来，并且显示
+在浏览器中。
+
+If-None-Match
+作用：IF-None-Match和ETag一起工作，工作原理是在HTTP Request中添加ETag信息。 当用户再次请求该资源的时候
+将HTTP Request 中加入If-None-Match信息（ETag的值）。 如果服务器验证资源
+ETag没有改变（该资源没有更新），将返回一个304状态告诉客户端使用本地缓存文件。
+否则将返回200状态和新的资源和ETag，使用这样的机制将提高网站的性能
+
+
+Pragma
+作用：防止页面被缓存，它和Cache-Control:no-cache作用一模一样
+Pargma只有一个用法， 例如： Pragma: no-cache
+
+注意: 在HTTP/1.0版本中，只实现了Pragema:no-cache, 没有实现Cache-Control
+
+Cache-Control
+
+作用: 这个是非常重要的规则。 这个用来指定Response-Request遵循的缓存机制。各个指令含义如下
+
+Cache-Control:Public   可以被任何缓存所缓存（）
+
+Cache-Control:Private     内容只缓存到私有缓存中
+
+Cache-Control:no-cache  所有内容都不会被缓存
+
+还有其他的一些用法， 我没搞懂其中的意思， 请大家参考其他的资料
+</code></pre><h3 id="Client-头域"><a href="#Client-头域" class="headerlink" title="Client 头域"></a>Client 头域</h3><pre><code>Accept
+作用： 浏览器可以接受的媒体类型
+通配符 Accept */*
+
+Accept-Encoding 
+作用：浏览器申明自己接受的编码方法，通常指定压缩方法，是否支持压缩，支持什么压缩方法
+
+Accept-Language
+作用：浏览器申明自己接收的语言
+</code></pre><h3 id="Cookie-Login-头域"><a href="#Cookie-Login-头域" class="headerlink" title="Cookie/Login 头域"></a>Cookie/Login 头域</h3><pre><code>Cookie:
+作用： 最重要的header, 将cookie的值发送给HTTP 服务器
+</code></pre><h3 id="Entity-头域"><a href="#Entity-头域" class="headerlink" title="Entity 头域"></a>Entity 头域</h3><pre><code>Content-Length
+作用：发送给HTTP服务器数据的长度。
+
+Content-Type
+数据的类型
+</code></pre><h3 id="Miscellaneous头域"><a href="#Miscellaneous头域" class="headerlink" title="Miscellaneous头域"></a>Miscellaneous头域</h3><pre><code>Referer
+作用： 提供了Request的上下文信息的服务器，告诉服务器我是哪个链接过来的！
+</code></pre><h3 id="Transport头域"><a href="#Transport头域" class="headerlink" title="Transport头域"></a>Transport头域</h3><pre><code>Connection
+</code></pre>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">旧事</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/01/01/diary-2018-0110-0116/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-prevent-spiders" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -814,164 +1026,6 @@ var _hmt = _hmt || [];
 
 
   
-    <article id="post-diary-2017-0101-0107" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/01/08/diary-2017-0101-0107/">薛定谔的年 1.1 -1.7</a>
-    </h1>
-  
-
-        
-        <a href="/2017/01/08/diary-2017-0101-0107/" class="archive-article-date">
-  	<time datetime="2017-01-08T02:36:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-01-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/diary-18.jpg" alt=""></p>
-<p>传说中，现在这段元旦到除夕的时间<br>由于不知该称之“今年”或“明年”<br>有人就说，叫薛定谔的年好了！<br>这么一想，好像许多东西都可以跟薛定谔扯上关系。</p>
-<p>比如这周，每天醒来第一件事<br>就是到12306查一下有没有薛定谔的票<br>有了，就输入那个神才知道对不对的薛定谔验证码<br>去完成这笔的鬼才知道成不成功的薛定谔订单</p>
-<p>这世道，上半年的代码，到下半年能不能编译都要打个问号<br>就不要试想真切地看清这繁花世界啦。<br>Mr.Big不断重复着：Oh baby baby it’s a wild world…<br>有时候发现我等的就是这几个字。</p>
-        
-          <a class="article-more-a" href="/2017/01/08/diary-2017-0101-0107/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">旧事</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2017/01/08/diary-2017-0101-0107/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-diary-2016-1225-1231" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/31/diary-2016-1225-1231/">旧事 年末</a>
-    </h1>
-  
-
-        
-        <a href="/2016/12/31/diary-2016-1225-1231/" class="archive-article-date">
-  	<time datetime="2016-12-31T02:36:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2016-12-31</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="/assets/blogImg/diary-17.jpg" alt=""></p>
-<p>每年这个时候都要趴在这座天桥，拍一张照<br>看着这个世界似乎没变，但又在喧哗和前行。</p>
-<p>这年成长了挺多，也学会看淡一些事情<br>可能是代码写多了，感觉世界的逻辑有时很简单。<br>事情无非是let，变化历历<br>或者是const，永恒安息</p>
-<p>如果一开始就想清楚，留不住的就随风去，不会变的就钉到骨子里。<br>那你说多轻松。</p>
-        
-          <a class="article-more-a" href="/2016/12/31/diary-2016-1225-1231/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">旧事</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2016/12/31/diary-2016-1225-1231/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -986,7 +1040,7 @@ var _hmt = _hmt || [];
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2017 Cheney
+    		&copy; 2018 Cheney
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1065,11 +1119,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">设计</a>
+                <a href="javascript:void(0)" class="js-tag color3">游戏</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
+                <a href="javascript:void(0)" class="js-tag color3">旧事</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1081,11 +1135,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">游戏</a>
+                <a href="javascript:void(0)" class="js-tag color3">设计</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">旧事</a>
+                <a href="javascript:void(0)" class="js-tag color3">杂谈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1093,7 +1147,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">web</a>
+                <a href="javascript:void(0)" class="js-tag color4">css</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1101,15 +1155,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">web</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">coffeescript</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">css</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">css3</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1149,6 +1199,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">css3</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">经验</a>
               </li>
              
@@ -1169,11 +1223,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">模式</a>
+                <a href="javascript:void(0)" class="js-tag color3">故事</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">故事</a>
+                <a href="javascript:void(0)" class="js-tag color3">模式</a>
               </li>
              
               <li class="article-tag-list-item">
